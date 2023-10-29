@@ -26,6 +26,7 @@ dependencies {
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	
 	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
 	
 	//hikari/ MySql / MyBatis
 	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
@@ -36,9 +37,19 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	
+	// swagger
+	implementation 'io.springfox:springfox-boot-starter:3.0.0'
+	
 	//test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:2.3.1'
+	
+	// slf4j & logback
+	implementation('org.slf4j:jcl-over-slf4j')
+	implementation('ch.qos.logback:logback-classic')
+	
+	// StringUtils
+	implementation('org.apache.commons:commons-lang3:3.12.0')
 }
 
 tasks.named('test') {

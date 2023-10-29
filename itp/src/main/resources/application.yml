@@ -1,24 +1,44 @@
+# 서버 관련
+server:
+  port: 8080
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
 
-
-# local/dev 환경
+# local/dev 설정
 spring:
+  profiles:
+    active:
+    - local
+    
   datasource:
-    url: //url
-    username: //username
-    password: //passowrd
-    driver-class-name: //driver
     hikari:
-      connection-timeout: 3000
-      validation-timeout: 3000
-      minimum-idle: 3
-      max-lifetime: 240000
-      maximum-pool-size: 10 
-
-logging:
-  level:
-    org.hibernate.SQL: info
-    root: info
-    com.zaxxer.hikari.pool.HikariPool: debug
+    # Connection Pool 설정
+     connection-timeout : 1800 # 커넥션의 타임아웃 ()
+     validation-timeout : 1800
+     minimum-idle: 2 # 연결 풀에서 HikariCP가 유지 관리하는 최소 유휴 연결 수
+     max-lifetime: 240000 # 닫힌 후 pool 에있는 connection의 최대 수명 (ms)입니다.
+     maximum-pool-size : 10 # 최대 pool size (defailt 10)
+     auto-commit : true
+       
+  # devtools
+  devtools:
+    livereload:
+      enabled: true
+      
+  # Swagger 오류 관련 설정 (버전으로 인한)
+  mvc:
+    pathmatch:
+      matching-strategy: ant-path-matcher
       
 
-# cloud(dr) 환경
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+  mapper-locations:
+  - classpath:mapper/*.xml
+          
+logging:
+  level:
+    '[com.zaxxer.hikari]': INFO # HikariPool에 대한 로깅을 수행함
