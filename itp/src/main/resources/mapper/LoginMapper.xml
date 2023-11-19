@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.interview.itp.Dao.Common.LoginDao">
+	<select id ="loginHr" resultType="com.interview.itp.Dto.Common.LoginDto">
+		SELECT "hr"				AS role
+			 , "PL101010"		AS id
+			 , "tedtName"		AS name
+			 , "999999999900000202311191"		
+			 					AS bizRecruitDtlNo
+			 , "9999999999"		AS bizNo
+			 , "삼성"				AS bizNm
+			 , "00000"			AS bizJobGrp
+			 , "20231119"		AS bizRecruitRegDt
+			 , 1				AS bizInterviewNo
+		  FROM DUAL
+	</select>
+</mapper> 
