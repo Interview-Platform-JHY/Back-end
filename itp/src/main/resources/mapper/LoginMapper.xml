@@ -2,17 +2,58 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.interview.itp.Dao.Common.LoginDao">
-	<select id ="loginHr" resultType="com.interview.itp.Dto.Common.LoginDto">
-		SELECT "hr"				AS role
-			 , "PL101010"		AS id
-			 , "tedtName"		AS name
-			 , "999999999900000202311191"		
-			 					AS bizRecruitDtlNo
-			 , "9999999999"		AS bizNo
-			 , "삼성"				AS bizNm
-			 , "00000"			AS bizJobGrp
-			 , "20231119"		AS bizRecruitRegDt
-			 , 1				AS bizInterviewNo
-		  FROM DUAL
+	<select id ="loginHr" parameterType="com.interview.itp.Dto.Common.loginDto_IN" resultType="com.interview.itp.Dto.Common.loginDto_OUT">
+		SELECT #{recruitNo} AS bizRecruitDtlNo,
+			   T1.BIZNO,
+		       BIZNM,
+		       FILENO,
+		       ENAME,
+		       ENO,
+		       #{role} AS role
+		  FROM recruit_bizinfo AS T1,
+			   recruit_enoinfo AS T2
+		 WHERE 1=1
+		   AND T1.BIZNO = T2.BIZNO
+		   AND T1.BIZNO = substring(#{recruitNo}, 1, 10)
+		   AND HR_MNG_YN = '1'
+		   AND ENO = #{id}
+		   AND PASSWORD = #{password}
+	</select>
+	
+	<select id ="loginInterviewer" parameterType="com.interview.itp.Dto.Common.loginDto_IN" resultType="com.interview.itp.Dto.Common.loginDto_OUT">
+		SELECT #{recruitNo} AS bizRecruitDtlNo,
+			   T1.BIZNO,
+		       BIZNM,
+		       FILENO,
+		       ENAME	AS name,
+		       ENO		AS id,
+		       #{role}	AS ROLE
+		  FROM recruit_bizinfo AS T1,
+			   recruit_enoinfo AS T2
+		 WHERE 1=1
+		   AND T1.BIZNO = T2.BIZNO
+		   AND T1.BIZNO = substring(#{recruitNo}, 1, 10)
+		   AND INTERVIEWER_YN = '1'
+		   AND ENO = #{id}
+		   AND PASSWORD = #{password}
+	</select>
+	
+	<select id ="loginInterviwee" parameterType="com.interview.itp.Dto.Common.loginDto_IN" resultType="com.interview.itp.Dto.Common.loginDto_OUT">
+		SELECT T1.RECRUIT_APPLT_NO AS id,
+		       T1.NAME ,
+		       T2.BIZNO ,
+		       T2.BIZNM ,
+		       T2.FILENO ,
+		       #{role}		AS ROLE
+		  FROM ( SELECT RECRUIT_APPLT_NO ,
+						EMAIL ,
+		                NAME ,
+		                BIZNO
+		           FROM applicantinfo
+				  WHERE substring(RECRUIT_APPLT_NO, 1, 24) = #{bizRecruitDtlNo}
+					AND EMAIL = #{id}
+					AND PASSWORD = #{password})  AS T1,
+			   recruit_bizinfo					 AS T2
+		WHERE T1.BIZNO = T2.BIZNO
 	</select>
 </mapper> 

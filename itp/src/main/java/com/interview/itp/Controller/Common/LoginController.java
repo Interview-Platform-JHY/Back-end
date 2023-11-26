@@ -11,14 +11,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.interview.itp.Dto.Common.LoginDto;
+import com.interview.itp.Dto.Common.LoginDto_IN;
+import com.interview.itp.Dto.Common.LoginDto_OUT;
 import com.interview.itp.Service.Common.LoginService;
 import com.interview.itp.Util.bizRecruitNoUtil;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 public class LoginController {
 	
 	private final String ROLE_ADMIN = "admin";
@@ -29,42 +32,42 @@ public class LoginController {
 	@Autowired
 	private LoginService loginService;
 	
-	bizRecruitNoUtil bizNoUtil;
+	private bizRecruitNoUtil bizNoUtil ;
 
 	@PostMapping("/login")
-	public String loginRole(@RequestBody LoginDto loginDto, HttpServletRequest request) {
+	public String loginRole(@RequestBody LoginDto_IN loginDto_IN, HttpServletRequest request) {
+
+		log.info(">>>>>>>>>>>>>>>>>> Login In DTO 확인 >>>>>>>>>>>>>>>>>> : "+loginDto_IN.toString());
 		
-		String role = loginDto.getRole();
+		String role = loginDto_IN.getRole();
 		
-		log.info("role >>>>>>>>>>>>>>>>>> : " + role);
-		
-		// 1. bizRecruitDtlNo 검증 및 DTO 세팅
-		HashMap<String, String> bizInfo = bizNoUtil.getBizInterviewInfo(loginDto.getBizRecruitDtlNo());
-		loginDto.setBizNo(bizInfo.get("bizNo"));
-		loginDto.setBizJobGrp(bizInfo.get("bizJobGrp"));
-		loginDto.setBizRecruitRegDt(bizInfo.get("bizRecruitRegDt"));
-		loginDto.setBizInterviewNo(bizInfo.get("bizInterviewNo"));
+		// 1. bizRecruitDtlNo 검증
+		if (!bizNoUtil.chkTotalLen(loginDto_IN.getBizRecruitDtlNo())) {
+			log.error(">>>>>>>>>>>>>>>>>>>>>. biz Error !!!!!!!! >>>>>>>>>>>>>.");
+		}
 		
 		// 2. role에 따른 json 로그인 service 태우기
-		LoginDto chkLoginDto = null;
+		LoginDto_OUT loginDto_OUT = null;
 		switch (role) {
 			case ROLE_ADMIN:
 				break;
 			case ROLE_HR:
-				chkLoginDto = loginService.loginHr(loginDto);
+				loginDto_OUT = loginService.loginHr(loginDto_IN);
 				break;
 			case ROLE_INTERVIEWER:
+				loginDto_OUT = loginService.loginInterviewer(loginDto_IN);
 				break;
 			case ROLE_INTERVIEWEE:
+				loginDto_OUT = loginService.loginInterviwee(loginDto_IN);
 				break;
 			default:
 				break;
 		}
 		
-		log.info(chkLoginDto.toString());
+		log.info(">>>>>>>>>>>>>>>>>> Login Out DTO 확인 >>>>>>>>>>>>>>>>>> : "+loginDto_OUT.toString());
 		
 		// 3. 로그인 성공이면 세션에 저장할 데이터 조회
-		if (!StringUtils.isNotBlank(chkLoginDto.getName())) {
+		if (!StringUtils.isNotBlank(loginDto_OUT.getName())) {
 			log.error(" 로그인 실패 !!!!!!!!!!!");
 		} else {
 			// 4. 1번에서 로그인 성공하면 세션 생성

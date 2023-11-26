@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class bizRecruitNoUtil {
 	
-	final int bizRecruitDtlNo_LEN = 24;		// 기업채용면접정보번호 (24자리)
+	final static int bizRecruitDtlNo_LEN = 24;		// 기업채용면접정보번호 (24자리)
 	final int bizNo[] = {0, 10};			// 기업채용면접정보번호에서 '기업번호' 얻기위한 index 시작, 끝+1 위치 : 10자리
 	final int bizJobGrp[] = {10, 15};		// 기업채용면접정보번호에서 '채용직군분야' 얻기위한 index 시작, 끝+1 위치 : 5자리
 	final int bizRecruitRegDt[] = {15, 23};	// 기업채용면접정보번호에서 '등록일자' 얻기위한 index 시작, 끝+1 위치 : 8자리
@@ -20,7 +20,7 @@ public class bizRecruitNoUtil {
 	 * @param : bizRecruitDtlNo(기업채용면접정보번호)
 	 * @return : 기업채용면접정보번호 길이
 	 * */
-	public boolean chkTotalLen(String bizRecruitDtlNo) {
+	public static boolean chkTotalLen(String bizRecruitDtlNo) {
 		return StringUtils.length(StringUtils.trim(bizRecruitDtlNo)) == bizRecruitDtlNo_LEN;
 	}
 	
@@ -95,5 +95,10 @@ public class bizRecruitNoUtil {
 		bizInterviewInfoMap.put("bizInterviewNo", this.getBizInterviewNo(bizRecruitDtlNo));
 		
 		return bizInterviewInfoMap;
+	}
+	
+	// private를 사용하여 객체 생성 막음
+	private bizRecruitNoUtil() {
+		
 	}
 }
